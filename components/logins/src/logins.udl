@@ -95,4 +95,7 @@ interface LoginStore {
 
     [Self=ByArc]
     void register_with_sync_manager();
+
+    [Throws=LoginsStorageError, Self=ByArc]
+    string sync(string key_id, string access_token, string sync_key, string tokenserver_url);
 };

@@ -7,10 +7,7 @@ use crate::login::Login;
 use crate::LoginsSyncEngine;
 use std::path::Path;
 use std::sync::{Arc, Mutex, Weak};
-use sync15::{
-    sync_multiple, telemetry, EngineSyncAssociation, KeyBundle, MemoryCachedState,
-    Sync15StorageClientInit, SyncEngine,
-};
+use sync15::{sync_multiple, EngineSyncAssociation, MemoryCachedState, SyncEngine};
 
 // Our "sync manager" will use whatever is stashed here.
 lazy_static::lazy_static! {
@@ -147,10 +144,21 @@ impl LoginStore {
     // Once this dies, `mem_cached_state` can die too.
     pub fn sync(
         self: Arc<Self>,
-        storage_init: &Sync15StorageClientInit,
-        root_sync_key: &KeyBundle,
-    ) -> Result<telemetry::SyncTelemetryPing> {
+        key_id: String,
+        access_token: String,
+        sync_key: String,
+        tokenserver_url: String,
+    ) -> Result<String> {
         let engine = LoginsSyncEngine::new(Arc::clone(&self));
+
+        // This is a bit hacky but iOS still uses sync() and we can only pass strings over ffi
+        // Below was ported from the "C" ffi code that does essentially the same thing
+        let storage_init = &sync15::Sync15StorageClientInit {
+            key_id,
+            access_token,
+            tokenserver_url: url::Url::parse(tokenserver_url.as_str())?,
+        };
+        let root_sync_key = &sync15::KeyBundle::from_ksync_base64(sync_key.as_str())?;
 
         let mut disk_cached_state = engine.get_global_state()?;
         let mut mem_cached_state = MemoryCachedState::default();
@@ -176,7 +184,7 @@ impl LoginStore {
             return Err(e.into());
         }
         match result.engine_results.remove("passwords") {
-            None | Some(Ok(())) => Ok(result.telemetry),
+            None | Some(Ok(())) => Ok(serde_json::to_string(&result.telemetry).unwrap()),
             Some(Err(e)) => Err(e.into()),
         }
     }

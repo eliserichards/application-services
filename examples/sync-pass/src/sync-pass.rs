@@ -352,7 +352,12 @@ fn main() -> Result<()> {
             }
             'S' | 's' => {
                 log::info!("Syncing!");
-                match Arc::clone(&store).sync(&cli_fxa.client_init, &cli_fxa.root_sync_key) {
+                match Arc::clone(&store).sync(
+                                    cli_fxa.client_init.key_id.clone(),
+                                    cli_fxa.client_init.access_token.clone(),
+                                    cli_fxa.root_sync_key.to_b64_array().join(","),
+                                    cli_fxa.client_init.tokenserver_url.to_string()
+                                ) {
                     Err(e) => {
                         log::warn!("Sync failed! {}", e);
                         log::warn!("BT: {:?}", e.backtrace());

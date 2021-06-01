@@ -4,14 +4,20 @@
 
 [Full Changelog](https://github.com/mozilla/application-services/compare/v77.0.1...main)
 
-### What's New
-
-- Both Android and iOS gain a `nimbus.getVariables(featureId: String)` and a new wrapper around JSON data coming straight from Remote Settings.
-- Application features can only have a maximum of one experiment running at a time.
+<!-- WARNING: New entries should be added below this comment to ensure the `./automation/prepare-release.py` script works as expected.
 
 Use the template below to make assigning a version number during the release cutting process easier.
 
-- Android and iOS `Branch` objects no longer have access to a `FeatureConfig` object.
+## [Component Name]
+
+### ⚠️ Breaking Changes ⚠️
+  - Description of the change with a link to the pull request ([#0000](https://github.com/mozilla/application-services/pull/0000))
+### What's Changed
+  - Description of the change with a link to the pull request ([#0000](https://github.com/mozilla/application-services/pull/0000))
+### What's New
+  - Description of the change with a link to the pull request ([#0000](https://github.com/mozilla/application-services/pull/0000))
+
+-->
 
 ## Logins
 
@@ -24,20 +30,6 @@ API Changes for Logins components:
 - Login is the main struct moving forward
   - Previously Android had `ServerPassword` and iOS had `LoginRecord`
   - `id` is now a String for consumers but internall we call `guid()` to generate/fetch the value
-  - `PasswordStore` is renamed to `LoginStore` and is the consumer facing store
+- `PasswordStore` is renamed to `LoginStore` and is the consumer facing store
   - The previous `LoginStore` in db.rs is more aptly named `LoginsSyncEngine`
 - Throwing exceptions is now done via [likely name change] LoginsStorageErrorException
-
-### ⚠️ Breaking Changes ⚠️
-
-- Description of the change with a link to the pull request ([#0000](https://github.com/mozilla/application-services/pull/0000))
-
-### What's Changed
-
-- Description of the change with a link to the pull request ([#0000](https://github.com/mozilla/application-services/pull/0000))
-
-### What's New
-
-- Description of the change with a link to the pull request ([#0000](https://github.com/mozilla/application-services/pull/0000))
-
--->
