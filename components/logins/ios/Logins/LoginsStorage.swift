@@ -15,10 +15,6 @@ typealias LoginsStoreError = LoginsStorageError
 open class LoginsStorage {
     private var store: LoginStore?
     let dbPath: String
-    // It's not 100% clear to me that this is necessary, but without it
-    // we might have a data race between reading `interruptHandle` in
-    // `interrupt()`, and writing it in `doDestroy` (or `doOpen`)
-    private let interruptHandleLock = NSLock()
     private let queue = DispatchQueue(label: "com.mozilla.logins-storage")
 
     public init(databasePath: String) {
@@ -283,7 +279,7 @@ open class LoginsStorage {
     open func sync(unlockInfo: SyncUnlockInfo) throws -> String {
         return try queue.sync {
             return try self.getUnlockedStore()
-                .sync(unlockInfo.kid, unlockInfo.fxaAccessToken, unlockInfo.syncKey, unlockInfo.tokenserverURL)
+                .sync(keyId: unlockInfo.kid, accessToken: unlockInfo.fxaAccessToken, syncKey: unlockInfo.syncKey, tokenserverUrl: unlockInfo.tokenserverURL)
         }
     }
 }
