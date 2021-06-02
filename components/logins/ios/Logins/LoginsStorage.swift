@@ -279,7 +279,12 @@ open class LoginsStorage {
     open func sync(unlockInfo: SyncUnlockInfo) throws -> String {
         return try queue.sync {
             return try self.getUnlockedStore()
-                .sync(keyId: unlockInfo.kid, accessToken: unlockInfo.fxaAccessToken, syncKey: unlockInfo.syncKey, tokenserverUrl: unlockInfo.tokenserverURL)
+                .sync(
+                    keyId: unlockInfo.kid,
+                    accessToken: unlockInfo.fxaAccessToken,
+                    syncKey: unlockInfo.syncKey,
+                    tokenserverUrl: unlockInfo.tokenserverURL
+                )
         }
     }
 }
